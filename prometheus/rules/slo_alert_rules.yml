@@ -1,0 +1,61 @@
+groups:
+  - name: oracle_slo_alerts
+    rules:
+      - alert: FastErrorBudgetBurn
+        expr: |
+          (
+          node:error_rate:5m > (14.4 * 0.001)
+          and
+            node:availability:ratio < 0.999
+            )
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Fast error budget burn on {{ $labels.node_id }}"
+          description: "Node {{ $labels.node_id }} burning error budget at 14.4x rate. Current availability: {{ $value | humanizePercentage }}"
+      - alert: SlowErrorBudgetBurn
+        expr: |
+          (
+            node:error_rate:5m > (1.0 * 0.001)
+            and
+            node:availability:ratio < 0.999
+          )
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Slow error budget burn on {{ $labels.node_id }}"
+          description: "Node {{ $labels.node_id }} burning error budget slowly"
+      - alert: HighResponseLatency
+        expr: node:response_time:p95 > 30
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High p95 latency on {{ $labels.node_id }}"
+          description: "p95 response time is {{ $value }}, threshold is 30s"
+      - alert: LowReputationScore
+        expr: oracle_reputation_score < 90
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low reputation score on {{ $labels.node_id }}"
+          description: "Reputation score is {{ $value }}, threshold is 90"
+      - alert: LowEthBalance
+        expr: oracle_eth_balance < 0.5
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Low ETH balance on {{ $labels.node_id }}"
+          description: "ETH balance is {{ $value }}, node needs refill to pay gas"
+      - alert: HighErrorRate
+        expr: node:error_rate:5m > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate on {{ $labels.node_id }}"
+          description: "Error rate is {{ $value }}, threshold is 5%"
