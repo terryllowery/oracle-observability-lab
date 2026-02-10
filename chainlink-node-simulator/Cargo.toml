@@ -1,0 +1,29 @@
+[package]
+name = "chainlink-node-simulator"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+# Web framework
+axum = "0.8.8"
+tokio = { version = "1.49.0", features = ["full"] }
+
+# Prometheus metrics
+prometheus = "0.14.0"
+
+# Serialization
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"
+
+# For random numbers
+rand = "0.10.0"
+
+# Logging
+tracing = "0.1.44"
+tracing-subscriber = "0.3.22"
+
+# Async utils
+futures = "0.3.31"
+
+
+
