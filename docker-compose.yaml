@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  # Oracle Node 1 - High quality
+  node-1:
+    build:
+      context: ./chainlink-node-simulator
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ID=node-1
+      - QUALITY_TIER=high
+      - RUST_LOG=info
+    ports:
+      - "9091:9090"
+    networks:
+      - oracle-net
+
+  # Oracle Node 2 - Medium quality
+  node-2:
+    build:
+      context: ./chainlink-node-simulator
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ID=node-2
+      - QUALITY_TIER=medium
+      - RUST_LOG=info
+    ports:
+      - "9092:9090"
+    networks:
+      - oracle-net
+
+  # Oracle Node 3 - Low quality
+  node-3:
+    build:
+      context: ./chainlink-node-simulator
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ID=node-3
+      - QUALITY_TIER=low
+      - RUST_LOG=info
+    ports:
+      - "9093:9090"
+    networks:
+      - oracle-net
+
+  # Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/rules:/etc/prometheus/rules
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-lifecycle'
+    ports:
+      - "9090:9090"
+    networks:
+      - oracle-net
+
+  # Grafana
+  grafana:
+    image: grafana/grafana:latest
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    ports:
+      - "3000:3000"
+    networks:
+      - oracle-net
+    depends_on:
+      - prometheus
+
+volumes:
+  prometheus-data:
+  grafana-data:
+
+networks:
+  oracle-net:
+    driver: bridge
