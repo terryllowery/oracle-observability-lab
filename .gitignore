@@ -1,0 +1,43 @@
+# Rust
+target/
+Cargo.lock
+**/*.rs.bk
+*.pdb
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+.docker/
+
+# Prometheus data
+prometheus-data/
+
+# Grafana data
+grafana-data/
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+
+# Private implementation notes and guides
+IMPLEMENTATION_GUIDE.md
+DEVLOG.md
+notes/
+private/
+interview-prep/
+
+# Temporary files
+tmp/
+temp/
